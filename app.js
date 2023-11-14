@@ -33,32 +33,27 @@ app.get('/',(req,res)=>{
 
 app.post('/longURL',(req,res)=>{
   const userLongURL = req.body.longURL
+  const newShortURL = generateShortURL()
 
   //確認longURL是否已存在資料庫(輸入相同網址時，產生一樣的縮址)
-  if (URL.findOne({ longURL: userLongURL }).exec()){
-    return URL.findOne({ longURL: userLongURL }).exec()
-      .then(url => res.redirect(`/showShortURL/${url.shortURL}`))
-  }
-
-  const newShortURL = generateShortURL()
-  URL.create({
-      longURL: userLongURL,
-      shortURL:newShortURL
-    })
-    .then(() => res.redirect(`/showShortURL/${newShortURL}`))
-    .catch(error=>console.log(error))
+  URL.findOne({ longURL: userLongURL }).exec()
+      .then(data=>
+        data ? data : URL.create({longURL: userLongURL, shortURL: newShortURL}))
+      .then((data) => res.redirect(`/showShortURL/${data.shortURL}`))
+      .catch(error => console.log(error))
+  
 })
 
 app.get('/showShortURL/:shortURL',(req,res)=>{
   const userShortURL = req.params.shortURL
-  URL.findOne({ shortURL : userShortURL}).exec()
-    .then(url=>res.render('show',{shortURL: url.shortURL, longURL: url.longURL}))
-    .catch(error => console.log(error))
+  res.render('show', { shortURL: userShortURL})
+  // URL.findOne({ shortURL : userShortURL}).exec()
+  //   .then(url=>res.render('show',{shortURL: url.shortURL, longURL: url.longURL}))
+  //   .catch(error => console.log(error))
 })
 
 app.get('/:shortURL', (req, res) => {
   const userShortURL = req.params.shortURL
-  console.log(userShortURL)
   URL.findOne({ shortURL : userShortURL}).exec()
   // .then(url => res.render('test', { longURL: url.longURL }))
     .then(url => res.redirect(url.longURL))
