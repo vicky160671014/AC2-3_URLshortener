@@ -45,8 +45,17 @@ app.post('/longURL',(req,res)=>{
 app.get('/showShortURL/:shortURL',(req,res)=>{
   const userShortURL = req.params.shortURL
   URL.findOne({ shortURL : userShortURL}).exec()
-  .then(url=>res.render('show',{shortURL: url.shortURL}))
-  .catch(error => console.log(error))
+    .then(url=>res.render('show',{shortURL: url.shortURL, longURL: url.longURL}))
+    .catch(error => console.log(error))
+})
+
+app.get('/:shortURL', (req, res) => {
+  const userShortURL = req.params.shortURL
+  console.log(userShortURL)
+  URL.findOne({ shortURL : userShortURL}).exec()
+  // .then(url => res.render('test', { longURL: url.longURL }))
+    .then(url => res.redirect(url.longURL))
+    .catch(error => console.log(error))
 })
 
 
