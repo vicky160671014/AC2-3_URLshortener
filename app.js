@@ -32,6 +32,7 @@ app.get('/',(req,res)=>{
 })
 
 app.post('/longURL',(req,res)=>{
+  if(!req.body.longURL.trim()) return res.redirect('/')
   const userLongURL = req.body.longURL
   const newShortURL = generateShortURL()
 
@@ -55,8 +56,12 @@ app.get('/showShortURL/:shortURL',(req,res)=>{
 app.get('/:shortURL', (req, res) => {
   const userShortURL = req.params.shortURL
   URL.findOne({ shortURL : userShortURL}).exec()
-  // .then(url => res.render('test', { longURL: url.longURL }))
-    .then(url => res.redirect(url.longURL))
+    .then(url =>{
+      if(!url){
+        return res.render('error', { shortURL: userShortURL })
+      }
+      res.redirect(url.longURL)
+    })
     .catch(error => console.log(error))
 })
 
