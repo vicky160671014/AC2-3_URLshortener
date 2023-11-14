@@ -33,6 +33,13 @@ app.get('/',(req,res)=>{
 
 app.post('/longURL',(req,res)=>{
   const userLongURL = req.body.longURL
+
+  //確認longURL是否已存在資料庫(輸入相同網址時，產生一樣的縮址)
+  if (URL.findOne({ longURL: userLongURL }).exec()){
+    return URL.findOne({ longURL: userLongURL }).exec()
+      .then(url => res.redirect(`/showShortURL/${url.shortURL}`))
+  }
+
   const newShortURL = generateShortURL()
   URL.create({
       longURL: userLongURL,
@@ -57,7 +64,6 @@ app.get('/:shortURL', (req, res) => {
     .then(url => res.redirect(url.longURL))
     .catch(error => console.log(error))
 })
-
 
 //listen on server
 app.listen(port, ()=>{
