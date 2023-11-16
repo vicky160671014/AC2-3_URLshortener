@@ -1,4 +1,21 @@
 <div class="d-flex flex-column col-5 mx-auto my-5">
     <h3>Success! Please use this link:</h3>
-    <a href="http://localhost:3000/{{shortURL}}">http://localhost:3000/{{shortURL}}</a>
+    <input type="text" value="http://localhost:3000/{{shortURL}}" id="shortURL" disabled>
+    <button type="button" class="btn btn-primary col-2 mx-auto my-3" onclick="copyFunction()">Copy</button>
+    <script>
+        function copyFunction() {
+            // Get the text field
+            const copyText = document.getElementById("shortURL");
+
+            // Select the text field
+            copyText.select();
+            copyText.setSelectionRange(0, 99999); // For mobile devices
+
+            // Copy the text inside the text field
+            navigator.clipboard.writeText(copyText.value);
+
+            // Alert the copied text
+            alert("Copied the text: " + copyText.value);
+        }
+    </script>
 </div>
