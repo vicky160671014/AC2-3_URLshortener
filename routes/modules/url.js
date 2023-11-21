@@ -5,7 +5,7 @@ const generateShortURL = require('../../generate_shorturl')
 
 
 router.post('/longURL', (req, res) => {
-  if (!req.body.longURL.trim()) return res.redirect('/')
+  if (!req.body.longURL.trim()) return res.redirect('/')//當input不是url或空值時，回到首頁
   const userLongURL = req.body.longURL
   const newShortURL = generateShortURL()
 
